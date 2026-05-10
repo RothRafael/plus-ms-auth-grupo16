@@ -1,64 +1,64 @@
 # plus-ms-auth
 
-Microsserviço de autenticação do projeto **Plus**.
+Microserviço de Autenticação do projeto **Plus** — sistema de gestão de estoque de roupas.
 
-Expõe uma API REST com JWT para login, refresh, logout e consulta do usuário autenticado. Persiste usuários em PostgreSQL (provisionado pelo Ministack via `plus-infra`).
+Este serviço implementa autenticação via **JWT** (Access e Refresh tokens), proteção contra força bruta e **RBAC** (Role-Based Access Control).
 
----
+## Topologia e Infraestrutura
 
-## Tecnologias
+Este projeto foi desenhado para rodar integrado ao ecossistema [plus-infra](https://github.com/pucrs-sweii-2026-1-30/plus-infra), que utiliza o **Ministack** para emular o ambiente AWS localmente.
 
-- Node.js + Express
-- JWT (`jsonwebtoken`) — access token (15 min) + refresh token (7 dias)
-- bcryptjs — hash de senhas
-- PostgreSQL (`pg`)
+### Dependências Externas
+- **PostgreSQL:** Provisionado pelo Ministack (RDS).
+- **API Gateway:** O roteamento externo é gerenciado pelo API Gateway do Ministack.
 
----
+## Como Executar
 
-## Endpoints
+### 1. Clonar o Repositório de Infraestrutura
+Este microsserviço deve residir no mesmo diretório pai do `plus-infra`:
 
-| Método | Rota | Descrição |
-|---|---|---|
-| POST | `/auth/login` | Autentica com email e senha; retorna `token` e `refresh` |
-| POST | `/auth/refresh` | Troca um refresh token válido por um novo access token |
-| POST | `/auth/logout` | Encerra a sessão (stateless) |
-| GET | `/auth/me` | Retorna os dados do usuário autenticado (`Authorization: Bearer <token>`) |
+```
+projeto/
+├── plus-ms-auth/  ← este repositório
+└── plus-infra/    ← repositório de infraestrutura
+```
 
----
-
-## Variáveis de ambiente
-
-Copie `.env.example` e ajuste conforme necessário:
-
+### 2. Configuração do Ambiente
+Configure as variáveis de ambiente:
 ```bash
 cp .env.example .env
 ```
 
-| Variável | Padrão | Descrição |
-|---|---|---|
-| `PORT` | `3001` | Porta do servidor |
-| `JWT_SECRET` | `change-me` | Segredo para assinar os tokens |
-| `DB_HOST` | `localhost` | Host do PostgreSQL |
-| `DB_PORT` | `5432` | Porta do PostgreSQL |
-| `DB_USER` | `plus` | Usuário do banco |
-| `DB_PASSWORD` | `plus_secret` | Senha do banco |
-| `DB_NAME` | `plus_auth` | Nome do banco |
-| `AWS_ENDPOINT` | `http://localhost:4566` | Endpoint do Ministack |
+### 3. Iniciar via plus-infra
+Para subir toda a stack (incluindo banco de dados e gateways):
 
----
+```bash
+cd ../plus-infra
+make setup
+```
 
-## Desenvolvimento local (sem Docker)
+O serviço estará disponível em `http://localhost:3001`.
+
+## Desenvolvimento Local (Standalone)
+
+Se desejar rodar apenas este serviço para desenvolvimento (assumindo que o banco de dados no `plus-infra` já esteja ativo):
 
 ```bash
 npm install
 npm run dev
 ```
 
-> Para rodar isolado, é necessário ter o PostgreSQL disponível na porta configurada em `.env`.
-> Em ambiente completo, use `make setup` no `plus-infra`.
+## Banco de Dados
+O schema é inicializado automaticamente no RDS do Ministack. Caso precise rodar manualmente, o script está em `scripts/init-db.sql`.
+
+## Endpoints (via API Gateway)
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/auth/login` | Autentica e gera tokens |
+| POST | `/auth/refresh` | Renova access token |
+| POST | `/auth/logout` | Revoga tokens |
+| GET | `/auth/me` | Dados do usuário logado |
 
 ---
-
-## Executando com a stack completa
-
-Este serviço é orquestrado pelo `plus-infra`. Consulte o [README do plus-infra](https://github.com/pucrs-sweii-2026-1-30/plus-infra).
+*Para mais detalhes sobre a arquitetura e segurança, veja o [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md).*
