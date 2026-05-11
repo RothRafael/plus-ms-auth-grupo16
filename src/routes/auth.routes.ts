@@ -9,6 +9,35 @@ const router = Router();
 const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 router.post('/register', async (req, res: Response) => {
+  /*
+    #swagger.tags = ['Auth']
+    #swagger.summary = 'Registrar novo usuário'
+    #swagger.description = 'Cria um novo usuário com email e senha. Retorna os dados do usuário criado junto com accessToken (15min) e refreshToken (7 dias).'
+  */
+  /* #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/RegisterBody" }
+      }
+    }
+  } */
+  /* #swagger.responses[201] = {
+    description: "Usuário registrado com sucesso",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/AuthTokensResponse" }
+      }
+    }
+  } */
+  /* #swagger.responses[400] = {
+    description: "Dados inválidos ou email já registrado",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" }
+      }
+    }
+  } */
   try {
     const { email, password } = req.body;
 
@@ -39,6 +68,43 @@ router.post('/register', async (req, res: Response) => {
 });
 
 router.post('/login', async (req, res: Response) => {
+  /*
+    #swagger.tags = ['Auth']
+    #swagger.summary = 'Autenticar usuário'
+    #swagger.description = 'Autentica com email e senha. Retorna accessToken (15min) e refreshToken (7 dias).'
+  */
+  /* #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/LoginBody" }
+      }
+    }
+  } */
+  /* #swagger.responses[200] = {
+    description: "Login realizado com sucesso",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/AuthTokensResponse" }
+      }
+    }
+  } */
+  /* #swagger.responses[400] = {
+    description: "Email e senha são obrigatórios",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" }
+      }
+    }
+  } */
+  /* #swagger.responses[401] = {
+    description: "Credenciais inválidas ou usuário inativo",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" }
+      }
+    }
+  } */
   try {
     const { email, password } = req.body;
 
@@ -61,6 +127,28 @@ router.post('/login', async (req, res: Response) => {
 });
 
 router.get('/me', authMiddleware, (req: AuthRequest, res: Response) => {
+  /*
+    #swagger.tags = ['Auth']
+    #swagger.summary = 'Dados do usuário autenticado'
+    #swagger.description = 'Retorna os dados do usuário extraídos do JWT. Requer Bearer token válido.'
+    #swagger.security = [{ "bearerAuth": [] }]
+  */
+  /* #swagger.responses[200] = {
+    description: "Dados do usuário autenticado",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/UserResponse" }
+      }
+    }
+  } */
+  /* #swagger.responses[401] = {
+    description: "Token ausente ou inválido",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" }
+      }
+    }
+  } */
   // authMiddleware guarantees req.user exists
   return res.status(200).json({
     message: 'Dados do usuário autenticado',
@@ -69,6 +157,54 @@ router.get('/me', authMiddleware, (req: AuthRequest, res: Response) => {
 });
 
 router.post('/refresh', async (req, res: Response) => {
+  /*
+    #swagger.tags = ['Auth']
+    #swagger.summary = 'Renovar access token'
+    #swagger.description = 'Recebe um refreshToken válido e retorna um novo accessToken (15min).'
+  */
+  /* #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/RefreshBody" }
+      }
+    }
+  } */
+  /* #swagger.responses[200] = {
+    description: "Token renovado com sucesso",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Token renovado com sucesso" },
+            data: {
+              type: "object",
+              properties: {
+                accessToken: { type: "string", example: "eyJ..." }
+              }
+            }
+          }
+        }
+      }
+    }
+  } */
+  /* #swagger.responses[400] = {
+    description: "Refresh token não informado",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" }
+      }
+    }
+  } */
+  /* #swagger.responses[401] = {
+    description: "Refresh token inválido ou expirado",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" }
+      }
+    }
+  } */
   try {
     const { refreshToken } = req.body;
 
@@ -88,11 +224,38 @@ router.post('/refresh', async (req, res: Response) => {
 });
 
 router.post('/logout', authMiddleware, async (req: AuthRequest, res: Response) => {
+  /*
+    #swagger.tags = ['Auth']
+    #swagger.summary = 'Encerrar sessão'
+    #swagger.description = 'Revoga o accessToken atual e o refreshToken do usuário. Requer Bearer token válido.'
+    #swagger.security = [{ "bearerAuth": [] }]
+  */
+  /* #swagger.responses[200] = {
+    description: "Logout realizado com sucesso",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Logout realizado com sucesso" }
+          }
+        }
+      }
+    }
+  } */
+  /* #swagger.responses[401] = {
+    description: "Token ausente ou inválido",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" }
+      }
+    }
+  } */
   try {
     const user = req.user!;
     const accessToken = (req as any).token;
     // user.exp is in seconds (epoch), if undefined fallback to 15m default
-    const exp = user.exp || Math.floor(Date.now() / 1000) + 900; 
+    const exp = user.exp || Math.floor(Date.now() / 1000) + 900;
 
     await authService.logout(user.userId, accessToken, exp);
 
