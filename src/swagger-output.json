@@ -3,7 +3,7 @@
   "info": {
     "title": "Plus MS Auth",
     "version": "1.0.0",
-    "description": "Microserviço de autenticação JWT com refresh tokens e controle de acesso por role (RBAC). Roles disponíveis: admin, moderator, user."
+    "description": "Microserviço de autenticação JWT com refresh tokens e controle de acesso por role (RBAC). Roles disponíveis: admin, gestor, vendedor."
   },
   "servers": [
     {
@@ -855,7 +855,7 @@
           },
           "role": {
             "type": "string",
-            "example": "user"
+            "example": "vendedor"
           },
           "is_active": {
             "type": "boolean",
@@ -910,8 +910,8 @@
         "type": "string",
         "enum": [
           "admin",
-          "moderator",
-          "user"
+          "gestor",
+          "vendedor"
         ]
       }
     }

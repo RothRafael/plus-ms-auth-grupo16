@@ -15,7 +15,7 @@ const doc = {
     version: '1.0.0',
     description:
       'Microserviço de autenticação JWT com refresh tokens e controle de acesso por role (RBAC). ' +
-      'Roles disponíveis: admin, moderator, user.',
+      'Roles disponíveis: admin, gestor, vendedor.',
   },
   servers: [
     { url: 'http://localhost:3001', description: 'Desenvolvimento local' },
@@ -47,7 +47,7 @@ const doc = {
       UserResponse: {
         id: 'uuid',
         email: 'joao@loja.com',
-        role: 'user',
+        role: 'vendedor',
         is_active: true,
         created_at: '2026-05-12T10:00:00Z',
       },
@@ -64,7 +64,7 @@ const doc = {
         revokedTokens: 7,
       },
       RoleEnum: {
-        '@enum': ['admin', 'moderator', 'user'],
+        '@enum': ['admin', 'gestor', 'vendedor'],
       },
     },
   },

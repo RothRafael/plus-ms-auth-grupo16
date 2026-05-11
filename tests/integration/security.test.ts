@@ -57,12 +57,12 @@ describe('Security and Injection Tests', () => {
   describe('Information Disclosure', () => {
     it('should not return sensitive internal error details to the client', async () => {
       // We need a valid token to pass the authMiddleware and reach the 404 handler for /api routes
-      const authHeader = generateAuthHeader('123', 'test@example.com', 'user');
-      
+      const authHeader = generateAuthHeader('123', 'test@example.com', 'vendedor');
+
       const response = await request(app)
         .get('/api/non-existent-route')
         .set('Authorization', authHeader);
-      
+
       expect(response.status).toBe(404);
       expect(response.body).not.toHaveProperty('stack');
       expect(response.body).not.toHaveProperty('internal');
