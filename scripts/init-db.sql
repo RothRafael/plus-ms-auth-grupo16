@@ -6,7 +6,7 @@ CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR UNIQUE NOT NULL,
     password VARCHAR NOT NULL,
-    role VARCHAR NOT NULL CHECK (role IN ('admin', 'moderator', 'user')),
+    role VARCHAR NOT NULL CHECK (role IN ('admin', 'gestor', 'vendedor')),
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -35,7 +35,7 @@ CREATE TABLE token_blacklist (
 -- Role Permissions Table
 CREATE TABLE role_permissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    role VARCHAR NOT NULL CHECK (role IN ('admin', 'moderator', 'user')),
+    role VARCHAR NOT NULL CHECK (role IN ('admin', 'gestor', 'vendedor')),
     action VARCHAR NOT NULL,
     resource VARCHAR NOT NULL,
     UNIQUE(role, action, resource)
@@ -61,16 +61,16 @@ INSERT INTO role_permissions (role, action, resource) VALUES
 ('admin', 'read', 'stats'),
 ('admin', 'manage', 'system');
 
--- Moderator permissions (5)
+-- Gestor permissions (5)
 INSERT INTO role_permissions (role, action, resource) VALUES
-('moderator', 'read', 'users'),
-('moderator', 'update', 'users'),
-('moderator', 'moderate', 'content'),
-('moderator', 'read', 'content'),
-('moderator', 'update', 'content');
+('gestor', 'read', 'users'),
+('gestor', 'update', 'users'),
+('gestor', 'moderate', 'content'),
+('gestor', 'read', 'content'),
+('gestor', 'update', 'content');
 
--- User permissions (3)
+-- Vendedor permissions (3)
 INSERT INTO role_permissions (role, action, resource) VALUES
-('user', 'read', 'own_profile'),
-('user', 'update', 'own_profile'),
-('user', 'create', 'content');
+('vendedor', 'read', 'own_profile'),
+('vendedor', 'update', 'own_profile'),
+('vendedor', 'create', 'content');

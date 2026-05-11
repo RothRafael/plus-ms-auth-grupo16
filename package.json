@@ -10,7 +10,9 @@
     "lint": "eslint src/**/*.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "swagger": "ts-node src/swagger.ts",
+    "swagger:dev": "npm run swagger && npm run dev"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -19,6 +21,8 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
@@ -30,6 +34,7 @@
     "@types/node": "^20.10.6",
     "@types/pg": "^8.10.9",
     "@types/supertest": "^7.2.0",
+    "@types/swagger-ui-express": "^4.1.8",
     "@types/uuid": "^9.0.7",
     "@vitest/coverage-v8": "^4.1.5",
     "supertest": "^7.2.2",

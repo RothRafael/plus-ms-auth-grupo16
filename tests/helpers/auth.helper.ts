@@ -7,7 +7,7 @@ import { Role } from '../../src/types';
 export const createTestUser = async (overrides: { email?: string; password?: string; role?: Role } = {}) => {
   const email = (overrides.email || faker.internet.email()).toLowerCase();
   const password = overrides.password || 'password123';
-  const role = overrides.role || 'user';
+  const role = overrides.role || 'vendedor';
   
   const passwordHash = await bcrypt.hash(password, 10);
   

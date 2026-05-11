@@ -19,7 +19,7 @@ describe('RBAC Integration Tests', () => {
     });
 
     it('should deny non-admin user from listing users', async () => {
-      const user = await createTestUser({ role: 'user' });
+      const user = await createTestUser({ role: 'vendedor' });
       const authHeader = generateAuthHeader(user.id, user.email, user.role);
 
       const response = await request(app)
@@ -84,8 +84,8 @@ describe('RBAC Integration Tests', () => {
       expect(response.body.data).toHaveProperty('activeUsers');
     });
 
-    it('should deny moderator from seeing admin stats', async () => {
-      const moderator = await createTestUser({ role: 'moderator' });
+    it('should deny gestor from seeing admin stats', async () => {
+      const moderator = await createTestUser({ role: 'gestor' });
       const authHeader = generateAuthHeader(moderator.id, moderator.email, moderator.role);
 
       const response = await request(app)
