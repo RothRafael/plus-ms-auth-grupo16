@@ -8,6 +8,24 @@ const router = Router();
 // Apply auth middleware to all protected routes
 router.use(authMiddleware);
 
+// GET /api/dashboard - rota pós-login para qualquer usuário autenticado
+router.get('/dashboard', (req: AuthRequest, res: Response) => {
+  /*
+    #swagger.tags = ['Dashboard']
+    #swagger.summary = 'Dashboard do usuário'
+    #swagger.description = 'Retorna mensagem de boas-vindas para o usuário autenticado.'
+    #swagger.security = [{ "bearerAuth": [] }]
+  */
+  return res.status(200).json({
+    message: 'Voce esta logado',
+    data: {
+      userId: req.user?.userId,
+      email: req.user?.email,
+      role: req.user?.role,
+    }
+  });
+});
+
 // GET /api/users (admin only) - lista todos os usuários
 router.get('/users', authorize('read', 'users'), async (req: AuthRequest, res: Response) => {
   /*
